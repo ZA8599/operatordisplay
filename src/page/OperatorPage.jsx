@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { faMessage,  faVolumeXmark, faPhoneSlash, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -13,6 +13,8 @@ const Wrapper = styled.div`
     display: flex;
     padding: 20px;
     gap: 10px;
+
+    overflow: hidden;
 `;
 
 const CallerCam = styled.div`
@@ -22,6 +24,9 @@ const CallerCam = styled.div`
     flex-wrap: wrap;
     gap: 5px;
     border-radius: 20px;
+
+    transition: .3s transform;
+    transform: translateX(${props => props.active ? '0' : '8%'});
 `;
 
 const Title = styled.div`
@@ -38,6 +43,7 @@ const Icons = styled.div`
     justify-content: flex-end;
     gap: 10px;
     padding: 10px;
+    cursor: pointer;
 `;
 
 const Icon = styled.div`
@@ -82,6 +88,9 @@ const Chatbox = styled.div`
     backdrop-filter: blur(8.4px);
     -webkit-backdrop-filter: blur(8.4px);
     border: 1px solid rgba(255, 255, 255, 0.3);
+
+    transition: .3s transform;
+    transform: translateX(${props => props.active ? '0' : '110%'});
 `;
 
 const Chatmessages = styled.div`
@@ -139,16 +148,23 @@ const lifts = [
 ];
 
 export default function OperatorPage() {
+    const [active, setActive] = useState(false);
+
+    function message(id) {
+        setActive(!active);
+        console.log("Message: " + id);
+    }
+
     return (
         <Wrapper>
-            <CallerCam>
+            <CallerCam active={active}>
                  {lifts.map((lift) => (
                     <LiftCam key={lift.id}>
                         <Title>{lift.name}</Title>
                         <Icons>
                             <Icon><FontAwesomeIcon icon={faVolumeXmark} /></Icon>
                             <Icon><FontAwesomeIcon icon={faPhoneSlash} /></Icon>
-                            <Icon><FontAwesomeIcon icon={faMessage} /></Icon>
+                            <Icon onClick={() => message(lift.id)}><FontAwesomeIcon icon={faMessage} /></Icon>
                         </Icons>
                     </LiftCam>
                 ))}
@@ -156,7 +172,7 @@ export default function OperatorPage() {
                     <Title>Operator Cam </Title>
                 </OperatorCam>
             </CallerCam>
-            <Chatbox>
+            <Chatbox active={active}>
                 <Chatmessages>
                     <Chatbutton>
                         <Title><FontAwesomeIcon icon={faPaperPlane} /></Title>
